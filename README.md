@@ -2,6 +2,8 @@
 
 The package provides a parser for command-line arguments.
 
+## [Documentation][doc]
+
 ## Contributing
 
 1. Fork the project.
