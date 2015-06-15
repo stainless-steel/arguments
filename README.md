@@ -4,6 +4,19 @@ The package provides a parser for command-line arguments.
 
 ## [Documentation][doc]
 
+## Example
+
+```
+use arguments::Arguments;
+
+let args = std::env::args(); // foo --bar --buz qux
+let Arguments { command, options, .. } = arguments::parse(args).unwrap();
+
+println!("Foo: {}", command);
+println!("Bar: {}", options.get::<bool>("bar").unwrap());
+println!("Buz: {}", options.get::<String>("buz").unwrap());
+```
+
 ## Contributing
 
 1. Fork the project.
