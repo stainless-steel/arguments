@@ -15,9 +15,9 @@ impl Parser {
     /// Parse command-line arguments.
     pub fn parse<I: Iterator<Item=String>>(&self, mut stream: I) -> Result<Arguments, String> {
         let mut arguments = Arguments {
-            command: match stream.next() {
-                Some(command) => String::from(command),
-                _ => raise!("expected at least the name of the executed command"),
+            program: match stream.next() {
+                Some(program) => String::from(program),
+                _ => raise!("expected at least the name of the executed program"),
             },
             options: Options::new(),
             orphans: Vec::new(),

@@ -8,9 +8,9 @@
 //! let args = std::env::args(); // foo --bar --buz qux
 //! # let args = vec!["foo", "--bar", "--buz", "quz"];
 //! # let args = args.iter().map(|a| a.to_string());
-//! let Arguments { command, options, .. } = arguments::parse(args).unwrap();
+//! let Arguments { program, options, .. } = arguments::parse(args).unwrap();
 //!
-//! println!("Foo: {}", command);
+//! println!("Foo: {}", program);
 //! println!("Bar: {}", options.get::<bool>("bar").unwrap());
 //! println!("Buz: {}", options.get::<String>("buz").unwrap());
 //! ```
@@ -24,7 +24,7 @@ macro_rules! raise(
 /// Command-line arguments.
 pub struct Arguments {
     /// The name of the executable.
-    pub command: String,
+    pub program: String,
     /// The options given.
     pub options: Options,
     /// Unclassified arguments.
