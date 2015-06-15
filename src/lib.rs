@@ -3,48 +3,98 @@
 //! ## Example
 //!
 //! ```
-//! let args = std::env::args().skip(1);
-//! let args = arguments::parse(args).unwrap();
+//! use arguments::Arguments;
 //!
-//! match args.get::<String>("input") {
-//!     Some(input) => println!("Filename: {}.", input),
-//!     _ => println!("Usage: foo --input <filename>"),
-//! }
+//! let args = std::env::args(); // foo --bar --buz qux
+//! # let args = vec!["foo", "--bar", "--buz", "quz"];
+//! # let args = args.iter().map(|a| a.to_string());
+//! let Arguments { command, options, .. } = Arguments::parse(args).unwrap();
+//!
+//! println!("Foo: {}", command);
+//! println!("Bar: {}", options.get::<bool>("bar").unwrap());
+//! println!("Buz: {}", options.get::<String>("buz").unwrap());
 //! ```
 
 extern crate options;
 
-/// A collection of command-line arguments.
-pub use options::Options as Arguments;
+/// Command-line arguments.
+pub struct Arguments {
+    /// The name of the executable.
+    pub command: String,
+    /// The given options.
+    pub options: Options,
+    /// The rest of the arguments.
+    pub orphans: Vec<String>,
+
+    _private: (),
+}
+
+/// Command-line options.
+pub use options::Options;
 
 macro_rules! raise(
     ($($arg:tt)*) => (return Err(format!($($arg)*)));
 );
 
-/// Parse command-line arguments.
-pub fn parse<I: Iterator<Item=String>>(stream: I) -> Result<Arguments, String> {
-    let mut arguments = Arguments::new();
-    let mut previous: Option<String> = None;
+impl Arguments {
+    /// Parse command-line arguments.
+    pub fn parse<I: Iterator<Item=String>>(mut stream: I) -> Result<Arguments, String> {
+        let mut arguments = Arguments {
+            command: match stream.next() {
+                Some(command) => String::from(command),
+                _ => raise!("expected at least the name of the executed command"),
+            },
+            options: Options::new(),
+            orphans: Vec::new(),
+            _private: (),
+        };
 
-    for chunk in stream {
-        if chunk.starts_with("--") {
-            if let Some(name) = previous {
-                arguments.set(&name, true);
+        let mut previous: Option<String> = None;
+        for chunk in stream {
+            if chunk.starts_with("--") {
+                if let Some(name) = previous {
+                    arguments.options.set(&name, true);
+                }
+                if chunk.len() == 2 {
+                    raise!("expected a name right after “--”");
+                }
+                previous = Some(String::from(&chunk[2..]));
+            } else if let Some(name) = previous {
+                arguments.options.set(&name, String::from(chunk));
+                previous = None;
+            } else {
+                arguments.orphans.push(chunk);
             }
-            if chunk.len() == 2 {
-                raise!("expected a name right after “--”");
-            }
-            previous = Some(String::from(&chunk[2..]));
-        } else if let Some(name) = previous {
-            arguments.set(&name, String::from(chunk));
-            previous = None;
-        } else {
-            raise!("expected a name starting from “--”, but found “{}”", chunk);
         }
-    }
-    if let Some(name) = previous {
-        arguments.set(&name, true);
-    }
+        if let Some(name) = previous {
+            arguments.options.set(&name, true);
+        }
 
-    Ok(arguments)
+        Ok(arguments)
+    }
+}
+
+/// Parse command-line arguments.
+#[inline]
+pub fn parse<I: Iterator<Item=String>>(stream: I) -> Result<Arguments, String> {
+    Arguments::parse(stream)
+}
+
+#[cfg(test)]
+mod tests {
+    use Arguments;
+
+    macro_rules! strings(
+        ($($str:expr),*) => (
+            [$($str),*].iter().map(|s| s.to_string()).collect::<Vec<_>>()
+        );
+    );
+
+    #[test]
+    fn orphans() {
+        let args = strings!["a", "b", "--c", "d", "e", "--f"];
+        let args = args.iter().map(|a| a.to_string());
+        let Arguments { orphans, .. } = Arguments::parse(args).unwrap();
+        assert_eq!(orphans, strings!["b", "e"]);
+    }
 }
