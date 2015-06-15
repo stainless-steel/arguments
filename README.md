@@ -10,9 +10,9 @@ The package provides a parser for command-line arguments.
 use arguments::Arguments;
 
 let args = std::env::args(); // foo --bar --buz qux
-let Arguments { command, options, .. } = arguments::parse(args).unwrap();
+let Arguments { program, options, .. } = arguments::parse(args).unwrap();
 
-println!("Foo: {}", command);
+println!("Foo: {}", program);
 println!("Bar: {}", options.get::<bool>("bar").unwrap());
 println!("Buz: {}", options.get::<String>("buz").unwrap());
 ```
