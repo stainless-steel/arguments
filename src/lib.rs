@@ -3,14 +3,14 @@
 //! ## Example
 //!
 //! ```
-//! let args = std::env::args(); // foo --bar --buz 42 --qux 'To be?'
-//! # let args = vec!["foo", "--bar", "--buz", "42", "--qux", "To be?"];
+//! let args = std::env::args(); // foo --bar --baz 42 --qux 'To be?'
+//! # let args = vec!["foo", "--bar", "--baz", "42", "--qux", "To be?"];
 //! # let args = args.iter().map(|a| a.to_string());
 //! let args = arguments::parse(args).unwrap();
 //!
 //! println!("Foo: {}", args.program);
 //! println!("Bar: {}", args.get::<bool>("bar").unwrap());
-//! println!("Buz: {}", args.get::<usize>("buz").unwrap());
+//! println!("Baz: {}", args.get::<usize>("baz").unwrap());
 //! println!("Qux: {}", args.get::<String>("qux").unwrap());
 //! ```
 
