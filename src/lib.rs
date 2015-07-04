@@ -16,21 +16,48 @@
 
 extern crate options;
 
-macro_rules! raise(
-    ($($arg:tt)*) => (return Err(format!($($arg)*)));
-);
+use std::{error, fmt};
 
-/// Command-line options.
-pub use options::Options;
+/// An error.
+pub struct Error(pub &'static str);
+
+/// A result.
+pub type Result<T> = std::result::Result<T, Error>;
+
+macro_rules! raise(
+    ($message:expr) => (return Err(Error($message)));
+);
 
 mod arguments;
 mod parser;
 
 pub use arguments::Arguments;
+pub use options::Options;
 pub use parser::Parser;
+
+impl error::Error for Error {
+    #[inline]
+    fn description(&self) -> &str {
+        &self.0
+    }
+}
+
+impl fmt::Debug for Error {
+    #[inline]
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        self.0.fmt(formatter)
+    }
+}
+
+impl fmt::Display for Error {
+    #[inline]
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        self.0.fmt(formatter)
+    }
+}
 
 /// Parse command-line arguments.
 #[inline]
-pub fn parse<I: Iterator<Item=String>>(stream: I) -> Result<Arguments, String> {
+pub fn parse<I: Iterator<Item=String>>(stream: I) -> Result<Arguments> {
     Parser::new().parse(stream)
 }

@@ -1,4 +1,4 @@
-use {Arguments, Options};
+use {Arguments, Error, Options, Result};
 
 /// A parser for command-line arguments.
 pub struct Parser {
@@ -13,7 +13,7 @@ impl Parser {
     }
 
     /// Parse command-line arguments.
-    pub fn parse<I: Iterator<Item=String>>(&self, mut stream: I) -> Result<Arguments, String> {
+    pub fn parse<I: Iterator<Item=String>>(&self, mut stream: I) -> Result<Arguments> {
         let mut arguments = Arguments {
             program: match stream.next() {
                 Some(program) => String::from(program),
