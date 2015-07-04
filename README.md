@@ -7,13 +7,13 @@ The package provides a parser for command-line arguments.
 ## Example
 
 ```rust
-let args = std::env::args(); // foo --bar --baz 42 --qux 'To be?'
-let args = arguments::parse(args).unwrap();
+let arguments = std::env::args(); // foo --bar --baz 42 --qux 'To be?'
+let arguments = arguments::parse(arguments).unwrap();
 
-println!("Foo: {}", args.program);
-println!("Bar: {}", args.get::<bool>("bar").unwrap());
-println!("Baz: {}", args.get::<usize>("baz").unwrap());
-println!("Qux: {}", args.get::<String>("qux").unwrap());
+println!("Foo: {}", arguments.program);
+println!("Bar: {}", arguments.get::<bool>("bar").unwrap());
+println!("Baz: {}", arguments.get::<usize>("baz").unwrap());
+println!("Qux: {}", arguments.get::<String>("qux").unwrap());
 ```
 
 ## Contributing
