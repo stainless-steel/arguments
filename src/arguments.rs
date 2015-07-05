@@ -1,5 +1,5 @@
 use options::Options;
-use std::any::{Any, TypeId};
+use std::any::Any;
 use std::str::FromStr;
 
 /// Command-line arguments.
@@ -16,11 +16,6 @@ impl Arguments {
     /// Get the value of an option (if present) converted to a specific type (if
     /// possible).
     pub fn get<T: Any + Clone + FromStr>(&self, name: &str) -> Option<T> {
-        let id = TypeId::of::<T>();
-        if id == TypeId::of::<bool>() || id == TypeId::of::<String>() {
-            self.options.get::<T>(name)
-        } else {
-            self.options.get_ref::<String>(name).and_then(|string| string.parse().ok())
-        }
+        self.options.get_ref::<String>(name).and_then(|string| string.parse().ok())
     }
 }

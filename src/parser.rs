@@ -17,18 +17,32 @@ impl Parser {
         let mut arguments = Arguments {
             program: match stream.next() {
                 Some(program) => String::from(program),
-                _ => raise!("expected at least the name of the executed program"),
+                _ => raise!("expected a name as the first argument"),
             },
             options: Options::new(),
             orphans: Vec::new(),
         };
 
         let mut previous: Option<String> = None;
+
+        macro_rules! set_boolean_if_any(
+            () => (
+                if let Some(ref name) = previous {
+                    if name.starts_with("no-") {
+                        if name.len() == 3 {
+                            raise!("expected a name right after “--no-”");
+                        }
+                        arguments.options.set(&name[3..], "false".to_string());
+                    } else {
+                        arguments.options.set(name, "true".to_string());
+                    }
+                }
+            );
+        );
+
         for chunk in stream {
             if chunk.starts_with("--") {
-                if let Some(name) = previous {
-                    arguments.options.set(&name, true);
-                }
+                set_boolean_if_any!();
                 if chunk.len() == 2 {
                     raise!("expected a name right after “--”");
                 }
@@ -40,9 +54,7 @@ impl Parser {
                 arguments.orphans.push(chunk);
             }
         }
-        if let Some(name) = previous {
-            arguments.options.set(&name, true);
-        }
+        set_boolean_if_any!();
 
         Ok(arguments)
     }
@@ -54,16 +66,22 @@ mod tests {
     use super::Parser;
 
     macro_rules! strings(
-        ($($str:expr),*) => (
-            [$($str),*].iter().map(|s| s.to_string()).collect::<Vec<_>>()
-        );
+        ($slices:expr) => ($slices.iter().map(|s| s.to_string()));
     );
 
     #[test]
+    fn booleans() {
+        let arguments = vec!["a", "--b", "--no-c", "--d"];
+        let arguments = Parser::new().parse(strings!(arguments)).unwrap();
+        assert_eq!(arguments.get::<bool>("b").unwrap(), true);
+        assert_eq!(arguments.get::<bool>("c").unwrap(), false);
+        assert_eq!(arguments.get::<bool>("d").unwrap(), true);
+    }
+
+    #[test]
     fn orphans() {
-        let args = strings!["a", "b", "--c", "d", "e", "--f"];
-        let args = args.iter().map(|a| a.to_string());
-        let Arguments { orphans, .. } = Parser::new().parse(args).unwrap();
-        assert_eq!(orphans, strings!["b", "e"]);
+        let arguments = vec!["a", "b", "--c", "d", "e", "--f"];
+        let Arguments { orphans, .. } = Parser::new().parse(strings!(arguments)).unwrap();
+        assert_eq!(&orphans, &["b", "e"]);
     }
 }
