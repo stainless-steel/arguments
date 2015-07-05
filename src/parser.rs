@@ -16,7 +16,7 @@ impl Parser {
     pub fn parse<I: Iterator<Item=String>>(&self, mut stream: I) -> Result<Arguments> {
         let mut arguments = Arguments {
             program: match stream.next() {
-                Some(program) => String::from(program),
+                Some(ref program) if !program.starts_with("--") => String::from(&program[..]),
                 _ => raise!("expected a name as the first argument"),
             },
             options: Options::new(),
@@ -68,6 +68,15 @@ mod tests {
     macro_rules! strings(
         ($slices:expr) => ($slices.iter().map(|s| s.to_string()));
     );
+
+    #[test]
+    fn program() {
+        let arguments = vec!["--a", "--b"];
+        match Parser::new().parse(strings!(arguments)) {
+            Ok(_) => unreachable!(),
+            Err(_) => {},
+        }
+    }
 
     #[test]
     fn booleans() {
