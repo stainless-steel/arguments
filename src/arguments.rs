@@ -20,12 +20,7 @@ impl Arguments {
         if id == TypeId::of::<bool>() || id == TypeId::of::<String>() {
             self.options.get::<T>(name)
         } else {
-            self.options.get_ref::<String>(name).and_then(|string| {
-                match string.parse() {
-                    Ok(value) => Some(value),
-                    _ => None,
-                }
-            })
+            self.options.get_ref::<String>(name).and_then(|string| string.parse().ok())
         }
     }
 }
