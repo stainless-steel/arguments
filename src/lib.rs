@@ -3,8 +3,8 @@
 //! ## Example
 //!
 //! ```
-//! let arguments = std::env::args(); // foo --bar --baz 42 --qux 'To be?'
-//! # let arguments = vec!["foo", "--bar", "--baz", "42", "--qux", "To be?"];
+//! let arguments = std::env::args(); // foo --no-bar --baz 42 --qux 'To be?'
+//! # let arguments = vec!["foo", "--no-bar", "--baz", "42", "--qux", "To be?"];
 //! # let arguments = arguments.iter().map(|a| a.to_string());
 //! let arguments = arguments::parse(arguments).unwrap();
 //!
