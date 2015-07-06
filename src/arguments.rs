@@ -6,7 +6,7 @@ use std::str::FromStr;
 pub struct Arguments {
     /// The name of the executable.
     pub program: String,
-    /// Raw options (either booleans or strings).
+    /// Raw options (all strings).
     pub options: Options,
     /// Unclassified arguments.
     pub orphans: Vec<String>,
