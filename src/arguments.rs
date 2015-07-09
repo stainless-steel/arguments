@@ -3,6 +3,7 @@ use std::any::Any;
 use std::str::FromStr;
 
 /// Command-line arguments.
+#[derive(Debug)]
 pub struct Arguments {
     /// The name of the executable.
     pub program: String,
