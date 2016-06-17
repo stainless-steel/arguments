@@ -1,12 +1,12 @@
 [package]
 name = "arguments"
-version = "0.5.1"
+version = "0.6.0"
+license = "Apache-2.0/MIT"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
-license = "MIT"
-repository = "https://github.com/stainless-steel/arguments"
-homepage = "https://github.com/stainless-steel/arguments"
-documentation = "https://stainless-steel.github.io/arguments"
 description = "The package provides a parser for command-line arguments."
+documentation = "https://stainless-steel.github.io/arguments"
+homepage = "https://github.com/stainless-steel/arguments"
+repository = "https://github.com/stainless-steel/arguments"
 
 [dependencies]
-options = "*"
+options = "0.5"
