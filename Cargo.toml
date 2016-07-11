@@ -2,7 +2,10 @@
 name = "arguments"
 version = "0.6.0"
 license = "Apache-2.0/MIT"
-authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
+authors = [
+  "Denis Kolodin <deniskolodin@gmail.com>",
+  "Ivan Ukhov <ivan.ukhov@gmail.com>",
+]
 description = "The package provides a parser for command-line arguments."
 documentation = "https://stainless-steel.github.io/arguments"
 homepage = "https://github.com/stainless-steel/arguments"
