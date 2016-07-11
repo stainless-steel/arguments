@@ -1,5 +1,4 @@
 use options::Options;
-use std::any::Any;
 use std::str::FromStr;
 
 /// Command-line arguments.
@@ -16,7 +15,7 @@ pub struct Arguments {
 impl Arguments {
     /// Get the value of an option (if present) converted to a specific type (if
     /// possible).
-    pub fn get<T: Any + Clone + FromStr>(&self, name: &str) -> Option<T> {
+    pub fn get<T: FromStr>(&self, name: &str) -> Option<T> {
         self.options.get_ref::<String>(name).and_then(|string| string.parse().ok())
     }
 }
