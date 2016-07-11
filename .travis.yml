@@ -7,7 +7,7 @@ rust:
   - nightly
 
 after_success:
-  - curl https://stainless-steel.github.io/travis/documents.sh | bash
+  - curl https://stainless-steel.github.io/travis/documentation.sh | bash
 
 env:
   global:
