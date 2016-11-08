@@ -3,8 +3,8 @@ name = "arguments"
 version = "0.6.2"
 license = "Apache-2.0/MIT"
 authors = [
-  "Denis Kolodin <deniskolodin@gmail.com>",
-  "Ivan Ukhov <ivan.ukhov@gmail.com>",
+    "Denis Kolodin <deniskolodin@gmail.com>",
+    "Ivan Ukhov <ivan.ukhov@gmail.com>",
 ]
 description = "The package provides a parser for command-line arguments."
 documentation = "https://docs.rs/arguments"
