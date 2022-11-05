@@ -58,6 +58,6 @@ impl fmt::Display for Error {
 
 /// Parse command-line arguments.
 #[inline]
-pub fn parse<I: Iterator<Item=String>>(stream: I) -> Result<Arguments> {
+pub fn parse<I: Iterator<Item = String>>(stream: I) -> Result<Arguments> {
     Parser::new().parse(stream)
 }

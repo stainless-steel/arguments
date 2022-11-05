@@ -13,7 +13,7 @@ impl Parser {
     }
 
     /// Parse command-line arguments.
-    pub fn parse<I: Iterator<Item=String>>(&self, mut stream: I) -> Result<Arguments> {
+    pub fn parse<I: Iterator<Item = String>>(&self, mut stream: I) -> Result<Arguments> {
         let mut arguments = Arguments {
             program: match stream.next() {
                 Some(ref program) if !program.starts_with("--") => String::from(&program[..]),
@@ -62,8 +62,8 @@ impl Parser {
 
 #[cfg(test)]
 mod tests {
-    use Arguments;
     use super::Parser;
+    use Arguments;
 
     macro_rules! strings(
         ($slices:expr) => ($slices.iter().map(|s| s.to_string()));
@@ -74,7 +74,7 @@ mod tests {
         let arguments = vec!["--a", "--b"];
         match Parser::new().parse(strings!(arguments)) {
             Ok(_) => unreachable!(),
-            Err(_) => {},
+            Err(_) => {}
         }
     }
 

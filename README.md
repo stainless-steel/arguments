@@ -1,8 +1,6 @@
-# Arguments [![Version][version-img]][version-url] [![Status][status-img]][status-url]
+# Arguments [![Package][package-img]][package-url] [![Documentation][documentation-img]][documentation-url] [![Build][build-img]][build-url]
 
 The package provides a parser for command-line arguments.
-
-## [Documentation][documentation]
 
 ## Example
 
@@ -22,8 +20,9 @@ Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 
-[documentation]: https://docs.rs/arguments
-[status-img]: https://travis-ci.org/stainless-steel/arguments.svg?branch=master
-[status-url]: https://travis-ci.org/stainless-steel/arguments
-[version-img]: https://img.shields.io/crates/v/arguments.svg
-[version-url]: https://crates.io/crates/arguments
+[build-img]: https://github.com/stainless-steel/arguments/workflows/build/badge.svg
+[build-url]: https://github.com/stainless-steel/arguments/actions/workflows/build.yml
+[documentation-img]: https://docs.rs/arguments/badge.svg
+[documentation-url]: https://docs.rs/arguments
+[package-img]: https://img.shields.io/crates/v/arguments.svg
+[package-url]: https://crates.io/crates/arguments
