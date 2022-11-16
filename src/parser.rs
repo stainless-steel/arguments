@@ -31,9 +31,9 @@ impl Parser {
                     if $name.len() == 3 {
                         raise!("expected a name right after “--no-”");
                     }
-                    arguments.options.set(&$name[3..], vec!["false".to_string()]);
+                    set!(&$name[3..], "false");
                 } else {
-                    arguments.options.set($name, vec!["true".to_string()]);
+                    set!($name, "true");
                 }
             );
             ($name:expr, $value:expr) => (
