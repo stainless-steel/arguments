@@ -3,15 +3,23 @@
 //! ## Example
 //!
 //! ```
-//! let arguments = std::env::args(); // foo --no-bar --baz 42 --qux 'To be?'
-//! # let arguments = vec!["foo", "--no-bar", "--baz", "42", "--qux", "To be?"];
+//! // foo --no-bar --baz 42 --baz 69 --qux "Hello, world!"
+//! let arguments = std::env::args();
+//! # let arguments = vec![
+//! #     "foo",
+//! #     "--no-bar",
+//! #     "--baz", "42",
+//! #     "--baz", "69",
+//! #     "--qux", "Hello, world!",
+//! # ];
 //! # let arguments = arguments.iter().map(|a| a.to_string());
 //! let arguments = arguments::parse(arguments).unwrap();
 //!
-//! println!("Foo: {}", arguments.program);
-//! println!("Bar: {}", arguments.get::<bool>("bar").unwrap());
-//! println!("Baz: {}", arguments.get::<usize>("baz").unwrap());
-//! println!("Qux: {}", arguments.get::<String>("qux").unwrap());
+//! assert_eq!(arguments.program, "foo");
+//! assert_eq!(arguments.get::<bool>("bar").unwrap(), false);
+//! assert_eq!(arguments.get::<usize>("baz").unwrap(), 69);
+//! assert_eq!(arguments.get_all::<usize>("baz").unwrap(), &[42, 69]);
+//! assert_eq!(arguments.get::<String>("qux").unwrap(), "Hello, world!");
 //! ```
 
 extern crate options;

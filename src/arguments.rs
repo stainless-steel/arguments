@@ -13,11 +13,24 @@ pub struct Arguments {
 }
 
 impl Arguments {
-    /// Get the value of an option (if present) converted to a specific type (if
-    /// possible).
+    /// Get the last value of an option (if present) converted to a specific
+    /// type (if possible).
     pub fn get<T: FromStr>(&self, name: &str) -> Option<T> {
         self.options
-            .get_ref::<String>(name)
-            .and_then(|string| string.parse().ok())
+            .get_ref::<Vec<String>>(name)
+            .and_then(|strings| strings.last().and_then(|string| string.parse().ok()))
+    }
+
+    /// Get all values of an option (if present) converted to a specific type
+    /// (if possible).
+    pub fn get_all<T: FromStr>(&self, name: &str) -> Option<Vec<T>> {
+        self.options
+            .get_ref::<Vec<String>>(name)
+            .and_then(|strings| {
+                strings
+                    .iter()
+                    .map(|string| string.parse().ok())
+                    .collect::<Option<Vec<_>>>()
+            })
     }
 }

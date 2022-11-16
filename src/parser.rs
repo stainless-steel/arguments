@@ -25,16 +25,24 @@ impl Parser {
 
         let mut previous: Option<String> = None;
 
-        macro_rules! set_boolean_if_any(
-            () => (
-                if let Some(ref name) = previous {
-                    if name.starts_with("no-") {
-                        if name.len() == 3 {
-                            raise!("expected a name right after “--no-”");
-                        }
-                        arguments.options.set(&name[3..], "false".to_string());
-                    } else {
-                        arguments.options.set(name, "true".to_string());
+        macro_rules! set(
+            ($name:expr) => (
+                if $name.starts_with("no-") {
+                    if $name.len() == 3 {
+                        raise!("expected a name right after “--no-”");
+                    }
+                    arguments.options.set(&$name[3..], vec!["false".to_string()]);
+                } else {
+                    arguments.options.set($name, vec!["true".to_string()]);
+                }
+            );
+            ($name:expr, $value:expr) => (
+                match arguments.options.get_mut::<Vec<_>>($name) {
+                    Some(array) => {
+                        array.push(String::from($value));
+                    }
+                    _ => {
+                        arguments.options.set($name, vec![String::from($value)]);
                     }
                 }
             );
@@ -42,19 +50,23 @@ impl Parser {
 
         for chunk in stream {
             if chunk.starts_with("--") {
-                set_boolean_if_any!();
+                if let Some(ref name) = previous {
+                    set!(name);
+                }
                 if chunk.len() == 2 {
                     raise!("expected a name right after “--”");
                 }
                 previous = Some(String::from(&chunk[2..]));
-            } else if let Some(name) = previous {
-                arguments.options.set(&name, String::from(chunk));
+            } else if let Some(ref name) = previous {
+                set!(name, chunk);
                 previous = None;
             } else {
                 arguments.orphans.push(chunk);
             }
         }
-        set_boolean_if_any!();
+        if let Some(ref name) = previous {
+            set!(name);
+        }
 
         Ok(arguments)
     }
@@ -79,6 +91,13 @@ mod tests {
     }
 
     #[test]
+    fn arrays() {
+        let arguments = vec!["a", "--b", "1", "--b", "2"];
+        let arguments = Parser::new().parse(strings!(arguments)).unwrap();
+        assert_eq!(arguments.get_all::<usize>("b").unwrap(), &[1, 2]);
+    }
+
+    #[test]
     fn booleans() {
         let arguments = vec!["a", "--b", "--no-c", "--d"];
         let arguments = Parser::new().parse(strings!(arguments)).unwrap();
@@ -92,5 +111,12 @@ mod tests {
         let arguments = vec!["a", "b", "--c", "d", "e", "--f"];
         let Arguments { orphans, .. } = Parser::new().parse(strings!(arguments)).unwrap();
         assert_eq!(&orphans, &["b", "e"]);
+    }
+
+    #[test]
+    fn overrides() {
+        let arguments = vec!["a", "--b", "1", "--b", "2"];
+        let arguments = Parser::new().parse(strings!(arguments)).unwrap();
+        assert_eq!(arguments.get::<usize>("b").unwrap(), 2);
     }
 }
