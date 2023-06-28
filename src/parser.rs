@@ -1,4 +1,5 @@
-use {Arguments, Error, Options, Result};
+use crate::arguments::Arguments;
+use crate::{Options, Result};
 
 /// A parser for command-line arguments.
 pub struct Parser {
@@ -8,6 +9,7 @@ pub struct Parser {
 impl Parser {
     /// Create a new parser.
     #[inline]
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Parser {
         Parser { _private: () }
     }
@@ -27,11 +29,11 @@ impl Parser {
 
         macro_rules! set(
             ($name:expr) => (
-                if $name.starts_with("no-") {
-                    if $name.len() == 3 {
+                if let Some(name) = $name.strip_prefix("no-") {
+                    if name.is_empty() {
                         raise!("expected a name right after “--no-”");
                     }
-                    set!(&$name[3..], "false");
+                    set!(name, "false");
                 } else {
                     set!($name, "true");
                 }
@@ -49,14 +51,14 @@ impl Parser {
         );
 
         for chunk in stream {
-            if chunk.starts_with("--") {
+            if let Some(name) = chunk.strip_prefix("--") {
                 if let Some(ref name) = previous {
                     set!(name);
                 }
-                if chunk.len() == 2 {
+                if name.is_empty() {
                     raise!("expected a name right after “--”");
                 }
-                previous = Some(String::from(&chunk[2..]));
+                previous = Some(String::from(name));
             } else if let Some(ref name) = previous {
                 set!(name, chunk);
                 previous = None;
@@ -75,7 +77,7 @@ impl Parser {
 #[cfg(test)]
 mod tests {
     use super::Parser;
-    use Arguments;
+    use crate::arguments::Arguments;
 
     macro_rules! strings(
         ($slices:expr) => ($slices.iter().map(|s| s.to_string()));

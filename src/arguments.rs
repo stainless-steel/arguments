@@ -1,5 +1,6 @@
-use options::Options;
 use std::str::FromStr;
+
+use options::Options;
 
 /// Command-line arguments.
 #[derive(Debug)]
