@@ -1,6 +1,6 @@
 [package]
 name = "arguments"
-version = "0.7.2"
+version = "0.8.0"
 edition = "2021"
 license = "Apache-2.0/MIT"
 authors = [
@@ -13,4 +13,4 @@ homepage = "https://github.com/stainless-steel/arguments"
 repository = "https://github.com/stainless-steel/arguments"
 
 [dependencies]
-options = "0.5"
+options = "0.6"
